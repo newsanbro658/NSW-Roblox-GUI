@@ -1,10 +1,11 @@
--- NS-W Full GUI Script Fixed
+-- NS-W Full GUI Script (Clean, Single Version)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
+-- ScreenGui
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "NSW_GUI"
 screenGui.Parent = PlayerGui
@@ -16,9 +17,9 @@ mainFrame.Position = UDim2.new(0, 10, 0, 10)
 mainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 mainFrame.BorderSizePixel = 2
 mainFrame.BorderColor3 = Color3.fromRGB(255, 255, 255)
-mainFrame.Parent = screenGui
 mainFrame.Active = true
 mainFrame.Draggable = true
+mainFrame.Parent = screenGui
 
 -- Note
 local noteLabel = Instance.new("TextLabel")
@@ -29,7 +30,6 @@ noteLabel.Text = "Note: It Only works on Private Server"
 noteLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
 noteLabel.Font = Enum.Font.Gotham
 noteLabel.TextSize = 12
-noteLabel.TextScaled = false
 noteLabel.TextWrapped = true
 noteLabel.Parent = mainFrame
 
@@ -52,7 +52,6 @@ local function createSpawner(title, items, isPet, isExtra)
     sectionButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     sectionButton.Font = Enum.Font.Gotham
     sectionButton.TextSize = 14
-    sectionButton.TextScaled = false
     sectionButton.Parent = mainFrame
 
     local frame = Instance.new("Frame")
@@ -88,7 +87,6 @@ local function createSpawner(title, items, isPet, isExtra)
         btn.TextColor3 = Color3.fromRGB(255, 255, 255)
         btn.Font = Enum.Font.Gotham
         btn.TextSize = 14
-        btn.TextScaled = false
         btn.Parent = scrollFrame
 
         btn.MouseEnter:Connect(function()
@@ -151,39 +149,22 @@ local pets = {
 }
 createSpawner("Pet Spawner", pets, true, false)
 
--- Extra Features in correct order
+-- Extra Features
 local extraFeatures = {
     "Clear Inventory",
     "Reset Garden",
     "Collect All",
     "Give Sheckles (100m per click)" -- last
 }
-local extraFrame = createSpawner("Extra Features", extraFeatures, false, true)
+createSpawner("Extra Features", extraFeatures, false, true)
 
--- Auto Sheckles fast (separate button at bottom)
+-- Auto Sheckles
 local autoSheckles = false
-local autoButton = Instance.new("TextButton")
-autoButton.Size = UDim2.new(0, 140, 0, 22)
-autoButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-autoButton.BorderSizePixel = 2
-autoButton.BorderColor3 = Color3.fromRGB(255, 255, 255)
-autoButton.Text = "Auto Sheckles: OFF"
-autoButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-autoButton.Font = Enum.Font.Gotham
-autoButton.TextSize = 14
-autoButton.TextScaled = false
-autoButton.Parent = extraFrame
-
-autoButton.MouseButton1Click:Connect(function()
-    autoSheckles = not autoSheckles
-    autoButton.Text = "Auto Sheckles: " .. (autoSheckles and "ON" or "OFF")
-end)
-
 spawn(function()
     while true do
         if autoSheckles then
             ReplicatedStorage:WaitForChild("GiveShecklesEvent"):FireServer()
         end
-        wait(0.05) -- very fast
+        wait(0.05)
     end
 end)
