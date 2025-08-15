@@ -1,4 +1,4 @@
--- NS-W Full GUI Script (Clean, Single Version)
+-- NS-W Full GUI Script (Fixed + Fast Auto Sheckles)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
@@ -98,7 +98,7 @@ local function createSpawner(title, items, isPet, isExtra)
 
         btn.MouseButton1Click:Connect(function()
             if isPet then
-                ReplicatedStorage:WaitForChild("GivePetRE"):FireServer({name, 1})
+                ReplicatedStorage:WaitForChild("GivePetRE"):FireServer(name, 1)
             elseif isExtra then
                 if name == "Collect All" then
                     ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("CollectAllFree_RE"):FireServer()
@@ -154,17 +154,34 @@ local extraFeatures = {
     "Clear Inventory",
     "Reset Garden",
     "Collect All",
-    "Give Sheckles (100m per click)" -- last
+    "Give Sheckles (100m per click)"
 }
-createSpawner("Extra Features", extraFeatures, false, true)
+local extraFrame = createSpawner("Extra Features", extraFeatures, false, true)
 
--- Auto Sheckles
+-- Auto Sheckles Toggle Button (FAST)
 local autoSheckles = false
+local autoButton = Instance.new("TextButton")
+autoButton.Size = UDim2.new(0, 140, 0, 22)
+autoButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+autoButton.BorderSizePixel = 2
+autoButton.BorderColor3 = Color3.fromRGB(255, 255, 255)
+autoButton.Text = "Auto Sheckles: OFF"
+autoButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+autoButton.Font = Enum.Font.Gotham
+autoButton.TextSize = 14
+autoButton.Parent = extraFrame
+
+autoButton.MouseButton1Click:Connect(function()
+    autoSheckles = not autoSheckles
+    autoButton.Text = "Auto Sheckles: " .. (autoSheckles and "ON" or "OFF")
+end)
+
+-- Fast Auto Sheckles Loop
 spawn(function()
     while true do
         if autoSheckles then
             ReplicatedStorage:WaitForChild("GiveShecklesEvent"):FireServer()
         end
-        wait(0.05)
+        wait(0.01) -- super fast
     end
 end)
